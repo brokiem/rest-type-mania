@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import * as cheerio from "cheerio";
-import randomWords from "random-words";
+import wordList from "./word_list.js";
 import * as fs from "fs";
 
 const fetchSentences = async (word) => {
@@ -13,10 +13,10 @@ const fetchSentences = async (word) => {
 
 const data = [];
 
-for (let i = 0; i < randomWords.wordsList.length; i++) {
-    const word = randomWords.wordsList[i];
+for (let i = 0; i < wordList.length; i++) {
+    const word = wordList[i];
 
-    console.log(`Fetching sentences for word: ${word} (${i + 1}/${randomWords.wordsList.length})`);
+    console.log(`Fetching sentences for word: ${word} (${i + 1}/${wordList.length})`);
 
     const sentences = await fetchSentences(word);
 
