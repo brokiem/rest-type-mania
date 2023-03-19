@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 import * as cheerio from "cheerio";
-import {wordsList} from "random-words";
+import randomWords from "random-words";
+const {wordsList} = randomWords;
 import * as fs from "fs";
 
 const fetchSentences = async (word) => {
