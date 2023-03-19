@@ -42,8 +42,7 @@ Promise.all(promises).then((results) => {
             sentences
         });
     }
+}).then(() => {
+    console.log(`Writing data to file...`);
+    fs.writeFileSync('./data.json', JSON.stringify(data, null, 4));
 });
-
-console.log(`Writing data to file...`);
-
-fs.writeFileSync('./data.json', JSON.stringify(data, null, 4));
