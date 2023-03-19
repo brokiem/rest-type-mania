@@ -11,7 +11,7 @@ app.get('/sentence', async (req, res) => {
         const html = await response.text();
 
         const $ = cheerio.load(html);
-        const sentences = $('td[id^="exv2st"]').map((i, el) => $(el).text().trim()).get();
+        const sentences = $('td[id^="exv2st"]').map((i, el) => $(el).text().replaceAll('’', '\'').trim()).get();
 
         if (sentences.length <= 0) {
             return fetchSentence();
@@ -38,7 +38,7 @@ app.get('/sentences/:count', async (req, res) => {
         const html = await response.text();
 
         const $ = cheerio.load(html);
-        const sentences = $('td[id^="exv2st"]').map((i, el) => $(el).text().trim()).get();
+        const sentences = $('td[id^="exv2st"]').map((i, el) => $(el).text().replaceAll('’', '\'').trim()).get();
 
         if (sentences.length <= 0) {
             return fetchSentences();
