@@ -12,18 +12,26 @@ const fetchSentences = async (word) => {
 }
 
 const data = [];
+const promises = [];
 
 for (let i = 0; i < wordList.length; i++) {
     const word = wordList[i];
 
     console.log(`Fetching sentences for word: ${word} (${i + 1}/${wordList.length})`);
 
-    const sentences = await fetchSentences(word);
-
-    data.push({
-        word,
-        sentences
-    });
+    promises.push(fetchSentences(word));
 }
+
+Promise.all(promises).then((results) => {
+    for (let i = 0; i < results.length; i++) {
+        const word = wordList[i];
+        const sentences = results[i];
+
+        data.push({
+            word,
+            sentences
+        });
+    }
+});
 
 fs.writeFileSync('./data.json', JSON.stringify(data, null, 4));
