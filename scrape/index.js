@@ -21,13 +21,13 @@ const fetchSentences = async (word) => {
     }
 }
 
+console.log(`Fetching sentences for ${wordList.length} words...`);
+
 const data = [];
 const promises = [];
 
 for (let i = 0; i < wordList.length; i++) {
     const word = wordList[i];
-
-    console.log(`Fetching sentences for word: ${word} (${i + 1}/${wordList.length})`);
 
     promises.push(fetchSentences(word));
 }
@@ -43,5 +43,7 @@ Promise.all(promises).then((results) => {
         });
     }
 });
+
+console.log(`Writing data to file...`);
 
 fs.writeFileSync('./data.json', JSON.stringify(data, null, 4));
