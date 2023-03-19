@@ -3,12 +3,22 @@ import * as cheerio from "cheerio";
 import wordList from "./word_list.js";
 import * as fs from "fs";
 
-const fetchSentences = async (word) => {
-    const response = await fetch(`https://www.wordhippo.com/what-is/sentences-with-the-word/${word}.html`);
-    const html = await response.text();
+const sleep = async (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-    const $ = cheerio.load(html);
-    return $('td[id^="exv2st"]').map((i, el) => $(el).text().replaceAll('’', '\'').trim()).get();
+const fetchSentences = async (word) => {
+    try {
+        const response = await fetch(`https://www.wordhippo.com/what-is/sentences-with-the-word/${word}.html`);
+        const html = await response.text();
+
+        const $ = cheerio.load(html);
+        return $('td[id^="exv2st"]').map((i, el) => $(el).text().replaceAll('’', '\'').trim()).get();
+    } catch (error) {
+        console.log(`Error fetching sentences for word: ${word}. Retrying...`);
+        await sleep(1000);
+        return fetchSentences(word);
+    }
 }
 
 const data = [];
