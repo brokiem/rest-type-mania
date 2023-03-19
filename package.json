@@ -1,0 +1,32 @@
+{
+  "name": "rest-type-mania",
+  "version": "1.0.0",
+  "description": "REST API for Type Mania website",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brokiem/rest-type-mania.git"
+  },
+  "author": "brokiem",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brokiem/rest-type-mania/issues"
+  },
+  "homepage": "https://github.com/brokiem/rest-type-mania#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.1",
+    "random-words": "^1.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "latest"
+  }
+}
