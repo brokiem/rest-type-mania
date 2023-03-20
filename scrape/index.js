@@ -15,37 +15,25 @@ const fetchSentences = async (word) => {
     return $('td[id^="exv2st"]').map((i, el) => $(el).text().replaceAll('’', '\'').trim()).get();
 }
 
-const MAX_RETRIES = 10;
-
 async function fetchData() {
-    const data = [];
-    const failedWords = [];
+    const data = JSON.parse(await import("data.json")); // read existing data from file
 
-    for (let i = 0; i < wordList.length; i++) {
-        const word = wordList[i];
+    const newWords = wordList.filter(word => !data.some(item => item.word === word)); // filter words that don't exist in data
 
-        console.log(`Fetching sentences for ${word} (${i + 1}/${wordList.length})...`);
+    for (let i = 0; i < newWords.length; i++) {
+        const word = newWords[i];
+
+        console.log(`Fetching sentences for ${word} (${i + 1}/${newWords.length})...`);
 
         let sentences;
-        let retryCount = 0;
 
-        do {
-            try {
-                sentences = await fetchSentences(word);
-                await sleep(1000);
-                break;
-            } catch (error) {
-                console.log(`Failed to fetch sentences for ${word}. Retrying in 5 seconds...`);
-
-                await sleep(5000);
-
-                if (++retryCount > MAX_RETRIES) {
-                    console.log(`Maximum retry count exceeded for ${word}. Skipping...`);
-                    failedWords.push(word);
-                    break;
-                }
-            }
-        } while (true);
+        try {
+            sentences = await fetchSentences(word);
+            await sleep(1000);
+        } catch (e) {
+            console.log(`Failed to fetch sentences for ${word}`);
+            continue;
+        }
 
         if (sentences && sentences.length > 0) {
             data.push({
@@ -53,14 +41,11 @@ async function fetchData() {
                 sentences
             });
         } else {
-            console.log(`No sentences found for ${word}`);
-        }
-    }
+            console.log(`Writing data to file...`);
+            fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
 
-    if (failedWords.length > 0) {
-        console.log(`Retrying ${failedWords.length} failed words...`);
-        const retryData = await fetchData(failedWords);
-        data.push(...retryData);
+            process.exit(0);
+        }
     }
 
     console.log(`Writing data to file...`);
