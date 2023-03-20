@@ -29,7 +29,7 @@ async function fetchData() {
 
         try {
             sentences = await fetchSentences(word);
-            await sleep(500);
+            await sleep(100);
         } catch (e) {
             console.log(`Failed to fetch sentences for ${word}`);
             continue;
