@@ -58,11 +58,8 @@ function fetchData() {
             }
 
             if (failedWords.length > 0 && retryCount < MAX_RETRIES) {
-                console.log(`Retrying ${failedWords.length} failed words in 5 seconds...`);
-                return sleep(5000).then(() => {
-                    fetchSentencesData(failedWords, retryCount + 1);
-                    failedWords.length = 0;
-                });
+                console.log(`Retrying ${failedWords.length} failed words...`);
+                return fetchSentencesData(failedWords, retryCount + 1);
             }
 
             return data;
