@@ -15,6 +15,7 @@ const fetchSentences = async (word) => {
         const $ = cheerio.load(html);
         return $('td[id^="exv2st"]').map((i, el) => $(el).text().replaceAll('’', '\'').trim()).get();
     } catch (error) {
+        console.log(`Failed to fetch sentences for ${word}, error: ${error}`);
         return [];
     }
 }
@@ -31,8 +32,6 @@ const fetchSentencesWithWords = (words) => {
     return promises;
 }
 
-console.log(`Fetching sentences for ${wordList.length} words...`);
-
 const MAX_RETRIES = 3;
 
 function fetchData() {
@@ -41,6 +40,8 @@ function fetchData() {
 
     function fetchSentences(words, retryCount = 0) {
         const promises = fetchSentencesWithWords(words);
+
+        console.log(`Fetching sentences for ${wordList.length} words...`);
 
         return Promise.all(promises).then((results) => {
             for (let i = 0; i < results.length; i++) {
@@ -67,7 +68,6 @@ function fetchData() {
         });
     }
 
-    console.log(`Fetching sentences for ${wordList.length} words...`);
     return fetchSentences(wordList)
         .then((data) => {
             console.log(`Writing data to file...`);
