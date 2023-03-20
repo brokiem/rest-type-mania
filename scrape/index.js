@@ -68,11 +68,10 @@ function fetchData() {
         });
     }
 
-    return fetchSentences(wordList)
-        .then((data) => {
-            console.log(`Writing data to file...`);
-            fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
-        });
+    return fetchSentencesData(wordList).then((data) => {
+        console.log(`Writing data to file...`);
+        fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
+    });
 }
 
 fetchData();
