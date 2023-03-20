@@ -29,5 +29,5 @@ jobs:
           git config user.email "${{ secrets.EMAIL }}"
           git add -A
           timestamp=$(date -u)
-          git commit -m "[BOT] Update sentences data" || exit 0
+          git commit -m "[actions] Update sentences data" || exit 0
           git push
