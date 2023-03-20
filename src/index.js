@@ -26,7 +26,12 @@ app.get('/sentences/:count', async (req, res) => {
         const object = data[Math.floor(Math.random() * data.length)];
         const sentences = object.sentences;
 
-        sentences.length = count > sentences.length ? sentences.length : count;
+        if (count === 1) {
+            return sentences[Math.floor(Math.random() * sentences.length)];
+        } else {
+            sentences.length = count > sentences.length ? sentences.length : count;
+        }
+
         return sentences;
     }
 
