@@ -15,34 +15,64 @@ const fetchSentences = async (word) => {
         const $ = cheerio.load(html);
         return $('td[id^="exv2st"]').map((i, el) => $(el).text().replaceAll('’', '\'').trim()).get();
     } catch (error) {
-        console.log(`Error fetching sentences for word: ${word}. Retrying...`);
-        await sleep(1000);
-        return fetchSentences(word);
+        return [];
     }
+}
+
+const fetchSentencesWithWords = (words) => {
+    const promises = [];
+
+    for (let i = 0; i < words.length; i++) {
+        const word = words[i];
+
+        promises.push(fetchSentences(word));
+    }
+
+    return promises;
 }
 
 console.log(`Fetching sentences for ${wordList.length} words...`);
 
-const data = [];
-const promises = [];
+const MAX_RETRIES = 3;
 
-for (let i = 0; i < wordList.length; i++) {
-    const word = wordList[i];
+function fetchData() {
+    const failedWords = [];
+    const data = [];
 
-    promises.push(fetchSentences(word));
-}
+    function fetchSentences(words, retryCount = 0) {
+        const promises = fetchSentencesWithWords(words);
 
-Promise.all(promises).then((results) => {
-    for (let i = 0; i < results.length; i++) {
-        const word = wordList[i];
-        const sentences = results[i];
+        return Promise.all(promises).then((results) => {
+            for (let i = 0; i < results.length; i++) {
+                const word = words[i];
+                const sentences = results[i];
 
-        data.push({
-            word,
-            sentences
+                if (sentences.length <= 0) {
+                    failedWords.push(word);
+                    continue;
+                }
+
+                data.push({
+                    word,
+                    sentences
+                });
+            }
+
+            if (failedWords.length > 0 && retryCount < MAX_RETRIES) {
+                console.log(`Retrying ${failedWords.length} failed words...`);
+                return fetchSentences(failedWords, retryCount + 1);
+            }
+
+            return data;
         });
     }
-}).then(() => {
-    console.log(`Writing data to file...`);
-    fs.writeFileSync('./data.json', JSON.stringify(data, null, 4));
-});
+
+    console.log(`Fetching sentences for ${wordList.length} words...`);
+    return fetchSentences(wordList)
+        .then((data) => {
+            console.log(`Writing data to file...`);
+            fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
+        });
+}
+
+fetchData();
