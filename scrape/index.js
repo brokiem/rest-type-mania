@@ -42,14 +42,14 @@ async function fetchData() {
             });
         } else {
             console.log(`Writing data to file...`);
-            fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
+            fs.writeFileSync('./data.json', JSON.stringify(data));
 
             process.exit(0);
         }
     }
 
     console.log(`Writing data to file...`);
-    fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
+    fs.writeFileSync('./data.json', JSON.stringify(data));
 }
 
 fetchData();
