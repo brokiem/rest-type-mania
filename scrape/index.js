@@ -16,7 +16,7 @@ const fetchSentences = async (word) => {
 }
 
 async function fetchData() {
-    const data = JSON.parse(await import("data.json")); // read existing data from file
+    const data = JSON.parse(fs.readFileSync("./data.json").toString()); // read existing data from file
 
     const newWords = wordList.filter(word => !data.some(item => item.word === word)); // filter words that don't exist in data
 
