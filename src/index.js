@@ -1,21 +1,19 @@
 import app from './app.js';
 import randomWords from 'random-words';
-import fetch from 'node-fetch';
-import * as cheerio from 'cheerio';
+import * as fs from "fs";
+
+const data = JSON.parse(fs.readFileSync('./data.json', 'utf8'));
+
+function getSentences(word) {
+    const wordObj = data.find(obj => obj.word === word);
+    return wordObj ? wordObj.sentences : [];
+}
 
 app.get('/sentence', async (req, res) => {
     const word = randomWords(1);
 
     const fetchSentence = async () => {
-        const response = await fetch(`https://www.wordhippo.com/what-is/sentences-with-the-word/${word}.html`);
-        const html = await response.text();
-
-        const $ = cheerio.load(html);
-        const sentences = $('td[id^="exv2st"]').map((i, el) => $(el).text().replaceAll('’', '\'').trim()).get();
-
-        if (sentences.length <= 0) {
-            return fetchSentence();
-        }
+        const sentences = getSentences(word);
 
         return sentences[Math.floor(Math.random() * sentences.length)];
     }
@@ -34,15 +32,7 @@ app.get('/sentences/:count', async (req, res) => {
     const word = randomWords(1);
 
     const fetchSentences = async () => {
-        const response = await fetch(`https://www.wordhippo.com/what-is/sentences-with-the-word/${word}.html`);
-        const html = await response.text();
-
-        const $ = cheerio.load(html);
-        const sentences = $('td[id^="exv2st"]').map((i, el) => $(el).text().replaceAll('’', '\'').trim()).get();
-
-        if (sentences.length <= 0) {
-            return fetchSentences();
-        }
+        const sentences = getSentences(word);
 
         sentences.length = count > sentences.length ? sentences.length : count;
 
