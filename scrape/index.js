@@ -38,7 +38,7 @@ function fetchData() {
     const failedWords = [];
     const data = [];
 
-    function fetchSentences(words, retryCount = 0) {
+    function fetchSentencesData(words, retryCount = 0) {
         const promises = fetchSentencesWithWords(words);
 
         console.log(`Fetching sentences for ${wordList.length} words...`);
@@ -60,8 +60,8 @@ function fetchData() {
             }
 
             if (failedWords.length > 0 && retryCount < MAX_RETRIES) {
-                console.log(`Retrying ${failedWords.length} failed words...`);
-                return fetchSentences(failedWords, retryCount + 1);
+                console.log(`Retrying ${failedWords.length} failed words in 5 seconds...`);
+                return sleep(5000).then(() => fetchSentencesData(words, retryCount + 1));
             }
 
             return data;
