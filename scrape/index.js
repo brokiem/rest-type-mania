@@ -41,8 +41,6 @@ function fetchData() {
     function fetchSentencesData(words, retryCount = 0) {
         const promises = fetchSentencesWithWords(words);
 
-        console.log(`Fetching sentences for ${wordList.length} words...`);
-
         return Promise.all(promises).then((results) => {
             for (let i = 0; i < results.length; i++) {
                 const word = words[i];
@@ -72,9 +70,15 @@ function fetchData() {
     }
 
     return fetchSentencesData(wordList).then((data) => {
-        console.log(`Writing data to file...`);
-        fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
+        if (data.length > 0) {
+            console.log(`Writing data to file...`);
+            fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
+        } else {
+            console.log(`No data to write to file.`);
+        }
     });
 }
+
+console.log(`Fetching sentences for ${wordList.length} words...`);
 
 fetchData();
