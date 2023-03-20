@@ -3,14 +3,10 @@ import * as fs from "fs";
 
 const data = JSON.parse(fs.readFileSync('./data.json', 'utf8'));
 
-function getSentences(word) {
-    const wordObj = data.find(obj => obj.word === word);
-    return wordObj ? wordObj.sentences : [];
-}
-
 app.get('/sentence', async (req, res) => {
     const fetchSentence = async () => {
-        const sentences = getSentences(data[Math.floor(Math.random() * data.length)]);
+        const object = data[Math.floor(Math.random() * data.length)];
+        const sentences = object.sentences;
 
         return sentences[Math.floor(Math.random() * sentences.length)];
     }
@@ -27,9 +23,10 @@ app.get('/sentences/:count', async (req, res) => {
     const count = req.params.count;
 
     const fetchSentences = async () => {
-        const sentences = getSentences(data[Math.floor(Math.random() * data.length)]);
-        sentences.length = count > sentences.length ? sentences.length : count;
+        const object = data[Math.floor(Math.random() * data.length)];
+        const sentences = object.sentences;
 
+        sentences.length = count > sentences.length ? sentences.length : count;
         return sentences;
     }
 
