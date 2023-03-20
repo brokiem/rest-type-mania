@@ -8,44 +8,65 @@ const sleep = async (ms) => {
 }
 
 const fetchSentences = async (word) => {
-    try {
-        const response = await fetch(`https://www.wordhippo.com/what-is/sentences-with-the-word/${word}.html`);
-        const html = await response.text();
+    const response = await fetch(`https://www.wordhippo.com/what-is/sentences-with-the-word/${word}.html`);
+    const html = await response.text();
 
-        const $ = cheerio.load(html);
-        return $('td[id^="exv2st"]').map((i, el) => $(el).text().replaceAll('’', '\'').trim()).get();
-    } catch (error) {
-        console.log(`Failed to fetch sentences for ${word}, error: ${error}`);
-        return [];
-    }
+    const $ = cheerio.load(html);
+    return $('td[id^="exv2st"]').map((i, el) => $(el).text().replaceAll('’', '\'').trim()).get();
 }
 
-const data = [];
+const MAX_RETRIES = 10;
 
-for (let i = 0; i < wordList.length; i++) {
-    const word = wordList[i];
+async function fetchData() {
+    const data = [];
+    const failedWords = [];
 
-    console.log(`Fetching sentences for ${word} (${i + 1}/${wordList.length})...`);
+    for (let i = 0; i < wordList.length; i++) {
+        const word = wordList[i];
 
-    const sentences = await fetchSentences(word);
+        console.log(`Fetching sentences for ${word} (${i + 1}/${wordList.length})...`);
 
-    if (sentences.length <= 0) {
-        console.log(`No sentences found for ${word}`);
-        continue;
+        let sentences;
+        let retryCount = 0;
+
+        do {
+            try {
+                sentences = await fetchSentences(word);
+                break;
+            } catch (error) {
+                console.log(`Failed to fetch sentences for ${word}. Retrying in 5 seconds...`);
+
+                await sleep(5000);
+
+                if (++retryCount > MAX_RETRIES) {
+                    console.log(`Maximum retry count exceeded for ${word}. Skipping...`);
+                    failedWords.push(word);
+                    break;
+                }
+            }
+        } while (true);
+
+        if (sentences && sentences.length > 0) {
+            data.push({
+                word,
+                sentences
+            });
+        } else {
+            console.log(`No sentences found for ${word}`);
+        }
     }
 
-    data.push({
-        word,
-        sentences
-    });
-}
+    if (failedWords.length > 0) {
+        console.log(`Retrying ${failedWords.length} failed words...`);
+        const retryData = await fetchData(failedWords);
+        data.push(...retryData);
+    }
 
-if (data.length > 0) {
     console.log(`Writing data to file...`);
     fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
-} else {
-    console.log(`No data to write to file.`);
 }
+
+fetchData();
 
 // const MAX_RETRIES = 3;
 //
