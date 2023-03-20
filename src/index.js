@@ -1,5 +1,4 @@
 import app from './app.js';
-import randomWords from 'random-words';
 import * as fs from "fs";
 
 const data = JSON.parse(fs.readFileSync('./data.json', 'utf8'));
@@ -10,10 +9,8 @@ function getSentences(word) {
 }
 
 app.get('/sentence', async (req, res) => {
-    const word = randomWords(1);
-
     const fetchSentence = async () => {
-        const sentences = getSentences(word);
+        const sentences = getSentences(data[Math.floor(Math.random() * data.length)]);
 
         return sentences[Math.floor(Math.random() * sentences.length)];
     }
@@ -29,11 +26,8 @@ app.get('/sentence', async (req, res) => {
 app.get('/sentences/:count', async (req, res) => {
     const count = req.params.count;
 
-    const word = randomWords(1);
-
     const fetchSentences = async () => {
-        const sentences = getSentences(word);
-
+        const sentences = getSentences(data[Math.floor(Math.random() * data.length)]);
         sentences.length = count > sentences.length ? sentences.length : count;
 
         return sentences;
