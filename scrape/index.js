@@ -20,62 +20,77 @@ const fetchSentences = async (word) => {
     }
 }
 
-const fetchSentencesWithWords = (words) => {
-    const promises = [];
+const data = [];
 
-    for (let i = 0; i < words.length; i++) {
-        const word = words[i];
+for (let i = 0; i < wordList.length; i++) {
+    const word = wordList[i];
 
-        promises.push(fetchSentences(word));
+    console.log(`Fetching sentences for ${word} (${i + 1}/${wordList.length})...`);
+
+    const sentences = await fetchSentences(word);
+
+    if (sentences.length <= 0) {
+        console.log(`No sentences found for ${word}`);
+        continue;
     }
 
-    return promises;
-}
-
-const MAX_RETRIES = 3;
-
-function fetchData() {
-    const failedWords = [];
-    const data = [];
-
-    function fetchSentencesData(words, retryCount = 0) {
-        const promises = fetchSentencesWithWords(words);
-
-        return Promise.all(promises).then((results) => {
-            for (let i = 0; i < results.length; i++) {
-                const word = words[i];
-                const sentences = results[i];
-
-                if (sentences.length <= 0) {
-                    failedWords.push(word);
-                    continue;
-                }
-
-                data.push({
-                    word,
-                    sentences
-                });
-            }
-
-            if (failedWords.length > 0 && retryCount < MAX_RETRIES) {
-                console.log(`Retrying ${failedWords.length} failed words...`);
-                return fetchSentencesData(failedWords, retryCount + 1);
-            }
-
-            return data;
-        });
-    }
-
-    return fetchSentencesData(wordList).then((data) => {
-        if (data.length > 0) {
-            console.log(`Writing data to file...`);
-            fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
-        } else {
-            console.log(`No data to write to file.`);
-        }
+    data.push({
+        word,
+        sentences
     });
 }
 
-console.log(`Fetching sentences for ${wordList.length} words...`);
+if (data.length > 0) {
+    console.log(`Writing data to file...`);
+    fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
+} else {
+    console.log(`No data to write to file.`);
+}
 
-fetchData();
+// const MAX_RETRIES = 3;
+//
+// function fetchData() {
+//     const failedWords = [];
+//     const data = [];
+//
+//     function fetchSentencesData(words, retryCount = 0) {
+//         const promises = fetchSentencesWithWords(words);
+//
+//         return Promise.all(promises).then((results) => {
+//             for (let i = 0; i < results.length; i++) {
+//                 const word = words[i];
+//                 const sentences = results[i];
+//
+//                 if (sentences.length <= 0) {
+//                     failedWords.push(word);
+//                     continue;
+//                 }
+//
+//                 data.push({
+//                     word,
+//                     sentences
+//                 });
+//             }
+//
+//             if (failedWords.length > 0 && retryCount < MAX_RETRIES) {
+//                 console.log(`Retrying ${failedWords.length} failed words...`);
+//                 return fetchSentencesData(failedWords, retryCount + 1);
+//             }
+//
+//             return data;
+//         });
+//     }
+//
+//     return fetchSentencesData(wordList).then((data) => {
+//         if (data.length > 0) {
+//             console.log(`Writing data to file...`);
+//             fs.writeFileSync('./data.json', JSON.stringify(data, null, 2));
+//         } else {
+//             console.log(`No data to write to file.`);
+//         }
+//     });
+// }
+//
+// console.log(`Fetching sentences for ${wordList.length} words...`);
+//
+// fetchData();
