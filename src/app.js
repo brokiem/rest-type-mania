@@ -1,13 +1,10 @@
-import express from 'express';
-import cors from 'cors';
+import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 
-const app = express();
+const app = new Hono();
 
 app.use(cors());
-app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
+app.get('/', (c) => c.html('Hello World!'));
 
 export default app;
