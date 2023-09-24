@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import * as cheerio from "cheerio";
 import wordList from "./word_list.js";
 import * as fs from "fs";

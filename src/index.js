@@ -1,9 +1,10 @@
+import { serve } from '@hono/node-server';
 import app from './app.js';
 import * as fs from "fs";
 
 const data = JSON.parse(fs.readFileSync('./data.json', 'utf8'));
 
-app.get('/sentence', async (req, res) => {
+app.get('/sentence', async (c) => {
     const fetchSentence = async () => {
         const object = data[Math.floor(Math.random() * data.length)];
         const sentences = object.sentences;
@@ -13,14 +14,14 @@ app.get('/sentence', async (req, res) => {
 
     const sentence = await fetchSentence();
 
-    res.json({
+    return c.json({
         error: false,
         message: sentence
     });
 });
 
-app.get('/sentences/:count', async (req, res) => {
-    const count = req.params.count;
+app.get('/sentences/:count', async (c) => {
+    const {count} = c.req.param();
 
     const fetchSentences = async () => {
         const object = data[Math.floor(Math.random() * data.length)];
@@ -37,13 +38,26 @@ app.get('/sentences/:count', async (req, res) => {
 
     const sentences = await fetchSentences();
 
-    res.json({
+    return c.json({
         error: false,
         message: sentences
     });
 });
 
+const isBun = typeof Bun !== "undefined";
 const port = process.env.PORT || 5000;
-app.listen(port, () => {
-    console.log(`Listening to http://127.0.0.1:${port}`);
-});
+
+if (!isBun) {
+    // Node.js
+    serve({
+        fetch: app.fetch,
+        port: port
+    }, (addressInfo) => {
+        console.log(`Server started on port http://localhost:${addressInfo.port}`);
+    });
+}
+
+export default {
+    port: port,
+    fetch: app.fetch,
+};
