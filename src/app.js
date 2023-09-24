@@ -5,6 +5,6 @@ const app = new Hono();
 
 app.use('*', cors());
 
-app.get('/', (c) => c.html('Hello World!'));
+app.get('/', (c) => c.redirect('https://typerx.vercel.app'));
 
 export default app;
