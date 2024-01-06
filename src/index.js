@@ -1,4 +1,3 @@
-import { serve } from '@hono/node-server';
 import app from './app.js';
 import * as fs from "fs";
 
@@ -44,20 +43,9 @@ app.get('/sentences/:count', async (c) => {
     });
 });
 
-const isBun = typeof Bun !== "undefined";
 const port = process.env.PORT || 5000;
 
-if (!isBun) {
-    // Node.js
-    serve({
-        fetch: app.fetch,
-        port: port
-    }, (addressInfo) => {
-        console.log(`Server started on port http://localhost:${addressInfo.port}`);
-    });
-}
-
-export default {
+Bun.serve({
     port: port,
     fetch: app.fetch,
-};
+});

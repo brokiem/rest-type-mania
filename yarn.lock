@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"@hono/node-server@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@hono/node-server/-/node-server-1.2.0.tgz#2cf2e387d2d245571ffe77381bc109d652da331d"
-  integrity sha512-aHT8lDMLpd7ioXJ1/057+h+oE/k7rCOWmjklYDsE0jE4CoNB9XzG4f8dRHvw4s5HJFocaYDiGgYM/V0kYbQ0ww==
-
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -182,10 +177,10 @@ has-flag@^3.0.0:
   resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-3.0.0.tgz#b5d454dc2199ae225699f3467e5a07f3b955bafd"
   integrity sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw==
 
-hono@^3.7.2:
-  version "3.7.2"
-  resolved "https://registry.yarnpkg.com/hono/-/hono-3.7.2.tgz#c3839d7ffbb5120850b2b926363d065020f4d18c"
-  integrity sha512-5SWYrAQJlfjHggcDTnmKZd5zlUEXmoUiBjnmL6C1W8MX39/bUw6ZIvfEJZgpo7d7Z/vCJ5FRfkjIQPRH5yV/dQ==
+hono@^3.11.7:
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/hono/-/hono-3.12.0.tgz#889214938af36ac265a99864f4a0104c4942f3fa"
+  integrity sha512-UPEtZuLY7Wo7g0mqKWSOjLFdT8t7wJ60IYEcxKl3AQNU4u+R2QqU2fJMPmSu24C+/ag20Z8mOTQOErZzK4DMvA==
 
 htmlparser2@^8.0.1:
   version "8.0.2"
